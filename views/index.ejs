@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Photo Ref Database</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, inital-scale=1.0">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.0/dist/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.7.0/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.7.0/dist/js/uikit-icons.min.js"></script>
+    <script>
+    const deletePhoto = (id, path) => {
+      var result = confirm("Want to delete?");
+      if (result) {
+        console.log(id);
+        fetch('http://localhost:8080/deleteImage', {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            _id: id,
+            path: path,
+          }) // body data type must match "Content-Type" header
+        })
+        .then(resu => {location.reload();});
+      }
+    }
+    const constructHtml = (photo) => {
+      const elem = `
+      <a class="uk-width-1-5" href="#modal`+String(photo._id)+`" uk-toggle>
+        <img src="`+String(photo.path)+`" alt="`+String(photo.path)+`">
+      </a>
+      <div id="modal`+String(photo._id)+`" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-text-center">
+          <img src="`+String(photo.path)+`" alt="`+String(photo.path)+`">
+          <form action="updateImage" method="POST">
+            <div class="uk-margin">
+              <input value="`+String(photo.path)+`" name="updatePath" class="uk-input" type="text" placeholder="Tags">
+            </div>
+            <div class="uk-margin">
+              <input value="`+String(photo.tags.toString())+`" name="updateTags" class="uk-input" type="text" placeholder="Tags">
+            </div>
+            <div class="uk-margin">
+              <input value="`+String(photo.characters.toString())+`" name="updateCharacters" class="uk-input" type="text" placeholder="Characters">
+            </div>
+            <div class="uk-margin">
+              <input value="`+String(photo.shows.toString())+`" name="updateShows" class="uk-input" type="text" placeholder="Shows">
+            </div>
+            <div class="uk-margin" hidden>
+              <input value="`+String(photo._id+'')+`" name="id" class="uk-input" type="text" placeholder="Shows">
+            </div>
+            <div class="uk-margin">
+              <select name="updateGender" class="uk-select">
+                <option value="female" `+String(photo.gender==='female'?'selected':'')+`>Female</option>
+                <option value="male" `+String(photo.gender==='male'?'selected':'')+`>Male</option>
+                <option value="other" `+String(photo.gender==='other'?'selected':'')+`>Other</option>
+                <option value="none" `+String(photo.gender==='none'?'selected':'')+`>None</option>
+              </select>
+            </div>
+            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+              <label><input name="updateNsfw" class="uk-checkbox" type="checkbox" `+String(photo.nsfw===true?'checked':'')+`> NSFW</label>
+              <label><input name="updatePorn" class="uk-checkbox" type="checkbox" `+String(photo.porn===true?'checked':'')+`> Porn</label>
+            </div>
+            <button type="submit" class="uk-button uk-button-default">Update</button>
+            <button type="button" class="uk-button uk-button-default" onClick="deletePhoto('`+(photo._id+'')+`','`+String(photo.path)+`')">delete</button>
+          </form>
+        </div>
+      </div>
+      `;
+      return elem;
+    }
+    const getRandom = () => {
+      const requestOptions = {
+        method: 'GET'
+      };
+      const params = {
+        tags: document.getElementById('tags').value,
+        characters: document.getElementById('characters').value,
+        shows: document.getElementById('shows').value,
+        gender: document.getElementById('gender').value,
+        nsfw: document.getElementById('nsfw').checked,
+        porn: document.getElementById('porn').checked,
+        amount: parseInt(document.getElementById('imnum').value),
+        ascending: document.getElementById('ascending').checked,
+        random: true,
+      };
+      console.log('params: ', params);
+      fetch('http://localhost:8080/getImages?' + new URLSearchParams(params), requestOptions)
+      .then(res => {return res.json();})
+      .then(data => {
+        document.getElementById('photogrid').innerHTML = "";
+        for (const photo of data) {
+          document.getElementById("photogrid")
+          .insertAdjacentHTML('beforeend',constructHtml(photo));
+        }
+      })
+      .catch(error => {console.log(error)});
+    }
+    const getImages = () => {
+      const requestOptions = {
+        method: 'GET'
+      };
+      const params = {
+        tags: document.getElementById('tags').value,
+        characters: document.getElementById('characters').value,
+        shows: document.getElementById('shows').value,
+        gender: document.getElementById('gender').value,
+        nsfw: document.getElementById('nsfw').checked,
+        porn: document.getElementById('porn').checked,
+        amount: parseInt(document.getElementById('imnum').value),
+        ascending: document.getElementById('ascending').checked,
+        random: false,
+      };
+      console.log('params: ', params);
+      fetch('http://localhost:8080/getImages?' + new URLSearchParams(params), requestOptions)
+      .then(res => {return res.json();})
+      .then(data => {
+        document.getElementById('photogrid').innerHTML = "";
+        for (const photo of data) {
+          document.getElementById("photogrid")
+          .insertAdjacentHTML('beforeend',constructHtml(photo));
+        }
+      })
+      .catch(error => {console.log(error)});
+    }
+    </script>
+  </head>
+  <body>
+    <div class="uk-container uk-margin uk-text-center uk-width-2xlarge">
+      <h1>refdb</h1>
+      <form class="uk-margin">
+        <div class="uk-margin">
+          <input id='tags' class="uk-input" type="text" placeholder="Tags">
+        </div>
+        <div class="uk-margin">
+          <input id='characters' class="uk-input" type="text" placeholder="Characters">
+        </div>
+        <div class="uk-margin">
+          <input id='shows' class="uk-input" type="text" placeholder="Shows">
+        </div>
+        <div class="uk-margin">
+          <select id="gender" class="uk-select">
+            <option>Female</option>
+            <option>Male</option>
+            <option>Other</option>
+            <option>None</option>
+            <option>Does not matter</option>
+          </select>
+        </div>
+        <div class="uk-text-left">
+        <label>
+          <select id="imnum" class="uk-select uk-width-1-6@s">
+            <option>None</option>
+            <% for(var i=1; i < 51; i++) { %>
+               <option><%= i %></option>
+            <% } %>
+          </select>
+        Limit</label>
+        </div>
+        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+          <label><input id="nsfw" class="uk-checkbox" type="checkbox"> NSFW</label>
+          <label><input id="porn" class="uk-checkbox" type="checkbox"> Porn</label>
+          <label><input id="ascending" class="uk-checkbox" type="checkbox"> Date Ascending</label>
+        </div>
+      </form>
+      <button class="uk-button" onClick="getImages()">Search</button><!-- This is a button toggling the modal -->
+      <button class="uk-button" onClick="getRandom()">random</button>
+      <button class="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #modal-example">Upload</button>
+      <!-- This is the modal -->
+      <div id="modal-example" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+          <h1>Upload Image</h1>
+          <form action="uploadImage" method="POST" enctype="multipart/form-data">
+            <div class="uk-margin">
+              <input name="uploadTags" class="uk-input" type="text" placeholder="Tags">
+            </div>
+            <div class="uk-margin">
+              <input name="uploadCharacters" class="uk-input" type="text" placeholder="Characters">
+            </div>
+            <div class="uk-margin">
+              <input name="uploadShows" class="uk-input" type="text" placeholder="Shows">
+            </div>
+            <div class="uk-margin">
+              <select name="uploadGender" class="uk-select">
+                <option>Female</option>
+                <option>Male</option>
+                <option>Other</option>
+                <option>None</option>
+              </select>
+            </div>
+            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+              <label><input name="uploadNsfw" class="uk-checkbox" type="checkbox"> NSFW</label>
+              <label><input name="uploadPorn" class="uk-checkbox" type="checkbox"> Porn</label>
+            </div>
+            <div class="uk-margin" uk-margin>
+              <div uk-form-custom="target: true">
+                <input type="file" name="photo">
+                <input name="insertphoto" class="uk-input uk-form-width-medium" type="text" placeholder="Select file" disabled>
+              </div>
+            </div>
+            <button type="submit" class="uk-button uk-button-default">Submit</button>
+          </form>
+        </div>
+    </div>
+    </div>
+    <div id="photogrid" class="uk-grid-collapse uk-child-width-expand@s uk-text-center uk-margin-large-top" uk-grid>
+    </div>
+  </body>
+</html>
