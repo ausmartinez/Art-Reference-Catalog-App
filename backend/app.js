@@ -24,7 +24,6 @@ app.set('view engine', 'ejs');
 const corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-    credentials: true,
     exposedHeaders: ["set-cookie"],
 }
 app.use(cors(corsOptions));

@@ -18,6 +18,8 @@ import {
     useToast,
 } from "@chakra-ui/react";
 
+import DeleteButton from './DeleteButton';
+
 const ImageModal = ({selectedImage, nsfw, porn, isOpen, onClose}) => {
     const [formData, setFormData] = useState(selectedImage);
     const toast = useToast();
@@ -80,13 +82,13 @@ const ImageModal = ({selectedImage, nsfw, porn, isOpen, onClose}) => {
             if (error || "error" in data) {
                 console.log("There was an error with the search");
             } else {
-                console.log(data);
                 toast({
                     title: 'Image Updated.',
                     status: 'success',
                     duration: 4000,
                     isClosable: true,
                 });
+                onClose();
             }
         })
         .catch(err => {
@@ -163,6 +165,10 @@ const ImageModal = ({selectedImage, nsfw, porn, isOpen, onClose}) => {
                             <HStack pt={5} spacing="24px">
                                 <Button type='submit'>Update</Button>
                                 <Button onClick={onClose}>Close</Button>
+                                <DeleteButton 
+                                imageId={selectedImage._id} 
+                                imagePath={selectedImage.path}
+                                onClose={onClose} />
                             </HStack>
                         </Center>
                     </form>

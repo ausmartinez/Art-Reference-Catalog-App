@@ -23,8 +23,7 @@ router.post('/', (req, res, next) => {
         }
     )
     .then(result => {
-        res.json({message: 'Successfully upldated file'});
-
+        res.json({message: 'Successfully updated image'});
     })
     .catch(err => {
         res.json({erorr: err});
