@@ -25,3 +25,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+
+*.pem
+/.node_persist
+.node_persist/
+.node_persist

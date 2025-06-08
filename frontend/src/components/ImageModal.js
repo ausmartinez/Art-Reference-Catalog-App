@@ -15,10 +15,12 @@ import {
     ModalOverlay,
     ModalContent,
     ModalBody,
+    useToast,
 } from "@chakra-ui/react";
 
 const ImageModal = ({selectedImage, nsfw, porn, isOpen, onClose}) => {
     const [formData, setFormData] = useState(selectedImage);
+    const toast = useToast();
 
     useEffect(() => {
         setFormData(selectedImage);
@@ -79,6 +81,12 @@ const ImageModal = ({selectedImage, nsfw, porn, isOpen, onClose}) => {
                 console.log("There was an error with the search");
             } else {
                 console.log(data);
+                toast({
+                    title: 'Image Updated.',
+                    status: 'success',
+                    duration: 4000,
+                    isClosable: true,
+                });
             }
         })
         .catch(err => {
