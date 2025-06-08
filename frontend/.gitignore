@@ -1,6 +1,3 @@
-.config.js
-node_modules/
-images/
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -24,4 +21,3 @@ images/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-

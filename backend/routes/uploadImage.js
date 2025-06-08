@@ -7,7 +7,7 @@ const path = require('path');
 
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: (req, file, cb) => {
     cb(null, 'images/');
   },
   filename: (req, file, cb) => {
@@ -37,9 +37,8 @@ const constructObject = (path, tags, characters, shows, gender, nsfw, porn) => {
 };
 
 
-const pushToDb = (object) => {
-  const client = dbClient.getDatabase();
-  const collection = client.collection('images');
+const pushToDb = (object, db) => {
+  const collection = db.collection('images');
   console.log(object);
   collection.insertOne(object)
   .then(result => {
@@ -51,9 +50,7 @@ const pushToDb = (object) => {
 };
 
 
-router.post('/',
-upload.single('photo'),
-(req, res, next) => {
+router.post('/', upload.single('photo'), (req, res, next) => {
   pushToDb(constructObject(
     req.file.filename,
     req.body.uploadTags,
@@ -62,7 +59,7 @@ upload.single('photo'),
     req.body.uploadGender,
     req.body.uploadNsfw,
     req.body.uploadPorn,
-  ));
+  ), req.app.get('db'));
   return res.redirect('/');
 });
 

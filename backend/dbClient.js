@@ -9,7 +9,7 @@ let _db;
 module.exports = {
   connectToDatabase: (callback) => {
     MongoClient.connect(CONNECTION_URL, {
-      useNewUrlParser: true,
+      //useNewUrlParser: true,
     }, (err, client) => {
       if (err) {
         console.log('******************ERROR IN DBCLIENT: ', err);
