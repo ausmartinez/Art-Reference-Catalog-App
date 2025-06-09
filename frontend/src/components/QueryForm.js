@@ -16,6 +16,8 @@ import {
     Center,
 } from "@chakra-ui/react";
 
+import Upload from "./Upload";
+
 const QueryForm = ({setImages}) => {
     const [params, setParams] = useState({ 
         "tags": "",
@@ -139,6 +141,7 @@ const QueryForm = ({setImages}) => {
                     </NumberInput>
                     <Button onClick={ handleSearch }>Search</Button>
                     <Button onClick={ handleRandom }>Random</Button>
+                    <Upload />
                 </HStack>
             </Center>
         </form>

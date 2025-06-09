@@ -69,24 +69,24 @@ const ImageModal = ({selectedImage, nsfw, porn, isOpen, onClose}) => {
         const gender = formData.gender;
         const nsfw = formData.nsfw;
         const porn = formData.porn;
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+        const requestoptions = {
+            method: "post",
+            headers: { "content-type": "application/json" },
             body: JSON.stringify({
                 id, tags, characters, shows, gender, nsfw, porn,
             }),
         };
-        fetch('http://localhost:8080/updateImage', requestOptions)
+        fetch('http://localhost:8080/updateimage', requestoptions)
         .then((response) => response.json())
         .then((data, error) =>  {
             if (error || "error" in data) {
-                console.log("There was an error with the search");
+                console.log("there was an error with the search");
             } else {
                 toast({
-                    title: 'Image Updated.',
+                    title: 'image updated.',
                     status: 'success',
                     duration: 4000,
-                    isClosable: true,
+                    isclosable: true,
                 });
                 onClose();
             }
