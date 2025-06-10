@@ -10,7 +10,7 @@ const arrToLower = (arr) => {
     });
 }
 
-const constructGetQuery = (tags, shows, characters, nsfw, porn, gender) => {
+const constructGetQuery = (tags, shows, characters, nsfw, porn, gender, strict) => {
     let query = {};
     if (tags && tags!=='') {query['tags'] = {'$in': arrToLower(tags.split(','))};}
     if (shows && shows!=='') { query['shows'] = {'$in': arrToLower(shows.split(','))}; }
@@ -19,6 +19,14 @@ const constructGetQuery = (tags, shows, characters, nsfw, porn, gender) => {
     else if (gender == '') { query['gender'] = 'female'} // Default empty gender to female
     query['nsfw'] = nsfw==="true"?true:false;
     query['porn'] = porn==="true"?true:false;
+    if (strict !== "true") {
+        if (query['nsfw'])  {
+            delete query['nsfw'];
+        }
+        if (query['porn']) {
+            delete query['porn'];
+        }
+    }
     return query
 }
 
@@ -37,6 +45,7 @@ router.get('/', (req, res, next) => {
         req.query.nsfw,
         req.query.porn,
         req.query.gender,
+        req.query.strict,
     );
     console.log('query: ', query);
     const db = req.app.get('db');

@@ -129,7 +129,9 @@ const Upload = () => {
                 <ModalContent>
                     <ModalCloseButton />
                     <ModalBody>
-                        <FileUploader handleChange={handleFileChange} name="file" types={fileTypes} />
+                        <Box pt={10}>
+                            <FileUploader handleChange={handleFileChange} name="file" types={fileTypes} />
+                        </Box>
                         <form onSubmit={handleSubmit}>
                             <Box pt={5}>
                                 <Input 

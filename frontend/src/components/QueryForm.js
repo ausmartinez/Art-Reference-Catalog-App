@@ -32,12 +32,20 @@ const QueryForm = ({setImages}) => {
 
     const [pCheck, setPCheck] = useState(false);
     const [nCheck, setNCheck] = useState(false);
+    const [aCheck, setACheck] = useState(false);
+    const [sCheck, setSCheck] = useState(false);
 
     const hpCheck = (e) => {
         setPCheck(e.target.checked);
     }
     const hnCheck = (e) => {
         setNCheck(e.target.checked);
+    }
+    const haCheck = (e) => {
+        setACheck(e.target.checked);
+    }
+    const hsCheck = (e) => {
+        setSCheck(e.target.checked);
     }
 
     const generateParams = (random) => {
@@ -49,8 +57,9 @@ const QueryForm = ({setImages}) => {
             nsfw: nCheck,
             porn: pCheck,
             amount: parseInt(params['imageCount']),
-            ascending: params['ascending'],
+            ascending: aCheck,
             random: random,
+            strict: sCheck,
         });
     }
 
@@ -121,13 +130,15 @@ const QueryForm = ({setImages}) => {
                     <option value="male">Male</option>
                     <option value="other">Other</option>
                     <option value="none">None</option>
+                    <option value="any">Any</option>
                 </Select>
             </Box>
             <Center pt={5}>
                 <Stack spacing={5} direction="row">
                     <Checkbox name="nsfwQ" onChange={hnCheck}>NSFW</Checkbox>
                     <Checkbox name="pornQ" onChange={hpCheck} colorScheme="red">Porn</Checkbox>
-                    <Checkbox name="ascending" onChange={handleChange}>Ascending</Checkbox>
+                    <Checkbox name="strict" onChange={hsCheck}>Strict</Checkbox>
+                    <Checkbox name="ascending" onChange={haCheck}>Ascending</Checkbox>
                 </Stack>
             </Center>
             <Center>

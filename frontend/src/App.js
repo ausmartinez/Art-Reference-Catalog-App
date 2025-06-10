@@ -24,7 +24,9 @@ function App() {
       <ChakraProvider>
         <div className="App">
         <Container>
-            <Heading pt={7} > Photo Reference Database </Heading>
+            <Center>
+                <Heading pt={7} > Photo Reference Database </Heading>
+            </Center>
             <QueryForm setImages={setImages} />
         </Container>
         <Center pt={10}>
